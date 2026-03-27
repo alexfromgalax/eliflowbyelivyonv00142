@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Erlaubte Farben: #20286D (Navy), #FAEC81 (Light Yellow), Schwarz, Weiß, Grau */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 234 55% 28%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 53 93% 74%;
+    --accent-foreground: 234 55% 28%;
+
+    --destructive: 0 0% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 234 55% 28%;
+
+    --radius: 0.875rem;
+
+    --elivyon-navy: 234 55% 28%;
+    --elivyon-yellow: 53 93% 74%;
+    --elivyon-magenta: 324 78% 33%;
+
+    --sidebar-background: 234 55% 28%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 53 93% 74%;
+    --sidebar-primary-foreground: 234 55% 28%;
+    --sidebar-accent: 234 45% 35%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 234 40% 38%;
+    --sidebar-ring: 53 93% 74%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 53 93% 74%;
+    --primary-foreground: 234 55% 28%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 53 93% 74%;
+    --accent-foreground: 234 55% 28%;
+
+    --destructive: 0 0% 35%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 53 93% 74%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(0 0% 8%) 100%);
+  }
+
+  .gradient-card {
+    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, hsl(234 55% 28%) 0%, hsl(324 78% 33%) 50%, hsl(53 93% 74%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .apple-section-light {
+    background-color: hsl(0 0% 97%);
+  }
+}
