@@ -326,10 +326,28 @@ export default function DashboardPage() {
   const likesMatFuellUnter = useLikes("mat-FUELL_UNTERFUELLUNG");
   const likesMatImplInsertion = useLikes("mat-IMPL_INSERTION");
   const likesMatImplAugmentation = useLikes("mat-IMPL_AUGMENTATION");
+  const likesMatImplFreilegung = useLikes("mat-IMPL_FREILEGUNG");
+  const likesMatImplSocket = useLikes("mat-IMPL_SOCKET_PRESERVATION");
+  const likesMatImplPeriimpl = useLikes("mat-IMPL_PERIIMPLANTITIS");
   const likesMatKfoMultiband = useLikes("mat-KFO_MULTIBAND");
+  const likesMatKfoFko = useLikes("mat-KFO_FKO");
+  const likesMatKfoRetainer = useLikes("mat-KFO_RETAINER");
   const likesMatKfoAligner = useLikes("mat-KFO_ALIGNER");
-  const likesMatParSrp = useLikes("mat-PAR_SRP");
-  const likesMatParChir = useLikes("mat-PAR_CHIRURGISCH");
+  const likesMatParAit = useLikes("mat-PAR_AIT");
+  const likesMatParOffen = useLikes("mat-PAR_OFFEN");
+  const likesMatChirExtEin = useLikes("mat-CHIR_EXTRAKTION_EIN");
+  const likesMatChirExtMehr = useLikes("mat-CHIR_EXTRAKTION_MEHR");
+  const likesMatChirInzision = useLikes("mat-CHIR_INZISION");
+  const likesMatChirFrenektomie = useLikes("mat-CHIR_FRENEKTOMIE");
+  const likesMatChirZystektomie = useLikes("mat-CHIR_ZYSTEKTOMIE");
+  const likesMatEndoEinlage = useLikes("mat-ENDO_EINLAGE");
+  const likesMatEndoStift = useLikes("mat-ENDO_STIFTAUFBAU");
+  const likesMatDiversSchienung = useLikes("mat-DIVERS_SCHIENUNG");
+  const likesMatDiversBleaching = useLikes("mat-DIVERS_BLEACHING");
+  const likesMatDiversMedikation = useLikes("mat-DIVERS_MEDIKATION");
+  const likesMatDiversNotfall = useLikes("mat-DIVERS_NOTFALL");
+  const likesMatZeInlay = useLikes("mat-ZE_INLAY_ONLAY");
+  const likesMatZeImplProt = useLikes("mat-ZE_IMPLANTAT_PROTHETIK");
 
   const getLikesForTechniken = (optionId: string): ReturnType<typeof useLikes> => {
     switch (optionId) {
