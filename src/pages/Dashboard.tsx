@@ -335,12 +335,11 @@ export default function DashboardPage() {
   const likesMatKfoAligner = useLikes("mat-KFO_ALIGNER");
   const likesMatParAit = useLikes("mat-PAR_AIT");
   const likesMatParOffen = useLikes("mat-PAR_OFFEN");
-  const likesMatChirExtEin = useLikes("mat-CHIR_EXTRAKTION_EIN");
-  const likesMatChirExtMehr = useLikes("mat-CHIR_EXTRAKTION_MEHR");
+  const likesMatChirExtEin = useLikes("mat-CHIR_EXTRAKTION_EIN2");
+  const likesMatChirExtMehr = useLikes("mat-CHIR_EXTRAKTION_MEHR2");
   const likesMatChirInzision = useLikes("mat-CHIR_INZISION");
   const likesMatChirFrenektomie = useLikes("mat-CHIR_FRENEKTOMIE");
   const likesMatChirZystektomie = useLikes("mat-CHIR_ZYSTEKTOMIE");
-  const likesMatEndoEinlage = useLikes("mat-ENDO_EINLAGE");
   const likesMatEndoStift = useLikes("mat-ENDO_STIFTAUFBAU");
   const likesMatDiversSchienung = useLikes("mat-DIVERS_SCHIENUNG");
   const likesMatDiversBleaching = useLikes("mat-DIVERS_BLEACHING");
