@@ -41,16 +41,19 @@ const prophylaxeOptionen = getCategoryOptions("PROPHY");
 import { toast } from "sonner";
 import { useLikes } from "@/hooks/useLikes";
 import { currentBehandler, availableAssistants, StaffMember } from "@/data/mockStaff";
-import { AufklaerungStep } from '../components/steps/AufklaerungStep';
-import { KonsolidierungStep } from '../components/steps/KonsolidierungStep';
-import { RegelcheckStep } from '../components/steps/RegelcheckStep';
+import { AufklaerungStep } from "@/components/workflow/AufklaerungStep";
+import { KonsolidierungStep } from "@/components/workflow/KonsolidierungStep";
+import { RegelcheckStep } from "@/components/workflow/RegelcheckStep";
 
 type Step =
-  | "team" | "action" | "patient" | "kostentraeger" | "date" | "behandlungsart"
+  | "team" | "action" | "patient" | "kostentraeger" | "date"
+  | "aufklaerung"
+  | "behandlungsart"
   | "prophy_auswahl"
   | "prophy_sub"
   | "mehrkosten"
   | "hkp"
+  | "konsolidierung" | "regelcheck"
   | "review" | "email" | "done";
 
 type Kostentraeger = "PKV" | "GKV" | "Selbstzahler" | "";
@@ -564,7 +567,7 @@ export default function DashboardPage() {
         } else if (needsHkp) {
           setStep("hkp");
         } else {
-          setStep("review");
+          setStep("konsolidierung");
         }
       }
     }
@@ -1207,7 +1210,7 @@ export default function DashboardPage() {
           if (needsHkp) {
             setStep("hkp");
           } else {
-            setStep("review");
+            setStep("konsolidierung");
           }
         }} disabled={!mehrkostenAkzeptiert}>
           Weiter <ArrowRight className="ml-2 h-4 w-4" />
@@ -1452,8 +1455,8 @@ export default function DashboardPage() {
         }}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Zurück
         </Button>
-        <Button onClick={() => setStep("review")}>
-          Weiter zur Prüfung <ArrowRight className="ml-2 h-4 w-4" />
+        <Button onClick={() => setStep("konsolidierung")}>
+          Weiter zur Konsolidierung <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -2307,8 +2310,8 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <h2 className="font-display text-2xl font-bold">Wann fand die Behandlung statt?</h2>
             <div className="flex flex-wrap gap-3">
-              <Button variant={dateOption === "heute" ? "default" : "outline"} onClick={() => { setDateOption("heute"); setTreatmentDate(new Date()); setStep("behandlungsart"); }}>Heute</Button>
-              <Button variant={dateOption === "gestern" ? "default" : "outline"} onClick={() => { setDateOption("gestern"); const d = new Date(); d.setDate(d.getDate() - 1); setTreatmentDate(d); setStep("behandlungsart"); }}>Gestern</Button>
+              <Button variant={dateOption === "heute" ? "default" : "outline"} onClick={() => { setDateOption("heute"); setTreatmentDate(new Date()); setStep("aufklaerung"); }}>Heute</Button>
+              <Button variant={dateOption === "gestern" ? "default" : "outline"} onClick={() => { setDateOption("gestern"); const d = new Date(); d.setDate(d.getDate() - 1); setTreatmentDate(d); setStep("aufklaerung"); }}>Gestern</Button>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant={dateOption === "kalender" ? "default" : "outline"}>
@@ -2320,7 +2323,7 @@ export default function DashboardPage() {
                   <Calendar
                     mode="single"
                     selected={treatmentDate}
-                    onSelect={d => { if (d) { setTreatmentDate(d); setDateOption("kalender"); setStep("behandlungsart"); }}}
+                    onSelect={d => { if (d) { setTreatmentDate(d); setDateOption("kalender"); setStep("aufklaerung"); }}}
                     locale={de}
                     className="pointer-events-auto"
                   />
@@ -2331,6 +2334,19 @@ export default function DashboardPage() {
               <p className="text-sm text-muted-foreground">Gewählt: {format(treatmentDate, "dd.MM.yyyy", { locale: de })}</p>
             )}
           </div>
+        );
+
+      case "aufklaerung":
+        return (
+          <AufklaerungStep
+            onNext={() => setStep("behandlungsart")}
+            onEmergency={() => {
+              // Notfall-Fast-Track: DIVERS vorselektieren und direkt zur Behandlungsauswahl
+              setSelectedArten(prev => prev.includes("DIVERS") ? prev : [...prev, "DIVERS"]);
+              setStep("behandlungsart");
+            }}
+            onBack={() => setStep("date")}
+          />
         );
 
       case "behandlungsart":
@@ -2423,6 +2439,53 @@ export default function DashboardPage() {
 
       case "hkp":
         return renderHkpStep();
+
+      case "konsolidierung":
+        return (
+          <KonsolidierungStep
+            onNext={() => setStep("regelcheck")}
+            onBack={() => {
+              if (needsHkp) {
+                setStep("hkp");
+              } else if (needsMehrkosten) {
+                setStep("mehrkosten");
+              } else {
+                // Zurück zum letzten Sub-Step
+                const lastCatId = selectedArten[selectedArten.length - 1];
+                const lastCatOpts = selectedOptions[lastCatId] || [];
+                const lastOptId = lastCatOpts[lastCatOpts.length - 1];
+                if (lastOptId) {
+                  const allOpts = getCategoryOptions(lastCatId);
+                  const lastOptDef = allOpts.find(o => o.id === lastOptId);
+                  if (lastOptDef) {
+                    setCurrentArtenIdx(selectedArten.length - 1);
+                    setCurrentSubStep({ optionId: lastOptId, subStepIndex: lastOptDef.subSteps.length - 1 });
+                    setStep("prophy_sub");
+                  }
+                }
+              }
+            }}
+          />
+        );
+
+      case "regelcheck":
+        return (
+          <RegelcheckStep
+            onNext={() => setStep("review")}
+            onBack={() => setStep("konsolidierung")}
+            onRework={() => setStep("konsolidierung")}
+            behandlungData={{
+              faktor: Object.values(faktorOverrides)[0]?.faktor || 2.3,
+              begruendung: Object.values(faktorOverrides)[0]?.begruendungen?.join("; ") || "",
+              leistungen: selectedProphyOptionen.map(id => ({ code: id, nummer: id })),
+              kostentraeger,
+              mehrkosten: mehrkostenOptionen.reduce((sum, mk) => sum, 0),
+              mehrkostenVereinbarung: mehrkostenAkzeptiert,
+              behandlungsart: selectedArten.includes("ZE") ? "ZAHNERSATZ" : selectedArten[0] || "",
+              hkp: needsHkp ? { regelversorgung: hkpZeilen.length > 0, befund: hkpZeilen.length > 0 } : null,
+            }}
+          />
+        );
 
       case "review":
         return (
@@ -2800,10 +2863,13 @@ export default function DashboardPage() {
       { name: "Patient", key: "patient" },
       { name: "Kostenträger", key: "kostentraeger" },
       { name: "Datum", key: "date" },
+      { name: "Aufklärung", key: "aufklaerung" },
       { name: "Behandlung", key: "behandlungsart" },
       { name: "Details", key: "prophy_sub" },
       ...(needsMehrkosten ? [{ name: "Mehrkosten", key: "mehrkosten" }] : []),
       ...(needsHkp ? [{ name: "HKP", key: "hkp" }] : []),
+      { name: "Konsolidierung", key: "konsolidierung" },
+      { name: "Regelcheck", key: "regelcheck" },
       { name: "Prüfung", key: "review" },
       { name: "Versand", key: "email" },
       { name: "Fertig", key: "done" },
