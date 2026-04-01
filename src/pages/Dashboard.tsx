@@ -41,6 +41,9 @@ const prophylaxeOptionen = getCategoryOptions("PROPHY");
 import { toast } from "sonner";
 import { useLikes } from "@/hooks/useLikes";
 import { currentBehandler, availableAssistants, StaffMember } from "@/data/mockStaff";
+import { AufklaerungStep } from '../components/steps/AufklaerungStep';
+import { KonsolidierungStep } from '../components/steps/KonsolidierungStep';
+import { RegelcheckStep } from '../components/steps/RegelcheckStep';
 
 type Step =
   | "team" | "action" | "patient" | "kostentraeger" | "date" | "behandlungsart"
